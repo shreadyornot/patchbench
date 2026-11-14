@@ -1,0 +1,42 @@
+paths:
+  data_root: ./data
+  index: data/metadata/index.parquet
+  output_full: data/converted
+  output_subset: data/subset
+  subset_wells: configs/s3_subset.yaml
+
+plate:
+  name: BR00116991
+  nrows: 16
+  ncols: 24
+  field_count: 9
+
+array:
+  axes: [t, c, z, y, x]
+  dtype: uint16
+  shape: [1080, 1080]
+  fill_value: 0
+  channel_names: [Mito, AGP, RNA, ER, DNA]
+
+chunking:
+  chunks: [1, 1, 1, 256, 256]
+  shards: [1, 5, 1, 1280, 1280]
+
+codec:
+  name: blosc
+  cname: zstd
+  clevel: 3
+  shuffle: shuffle
+  nthreads: 1
+
+ome_ngff:
+  version: "0.5" # fyi
+  field_path: site_minus_1 # fyi
+
+hdf5:
+  layout: one_dataset_per_fov  # fyi
+
+variants:
+  zarr_unsharded: {file_format: zarr, to_shard: false}
+  zarr_sharded: {file_format: zarr, to_shard: true}
+  hdf5: {file_format: hdf5}
